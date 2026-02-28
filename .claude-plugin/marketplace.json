@@ -1,0 +1,25 @@
+{
+  "name": "the-pantheon",
+  "owner": {
+    "name": "Jeremy Brice"
+  },
+  "metadata": {
+    "description": "A plugin marketplace for Claude Code — agent teams, skills, hooks, and more.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "guardian",
+      "source": "./guardian",
+      "description": "Hook-based guardian agents and team playbooks for autonomous, validated development workflows",
+      "version": "1.0.0-alpha",
+      "author": {
+        "name": "Jeremy Brice"
+      },
+      "license": "MIT",
+      "keywords": ["agent-team", "validation", "playbooks", "hooks", "autonomous"],
+      "category": "agent-teams",
+      "tags": ["agent-team", "guardian", "validation", "playbooks"]
+    }
+  ]
+}
