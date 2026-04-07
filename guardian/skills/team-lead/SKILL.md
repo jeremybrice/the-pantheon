@@ -15,8 +15,18 @@ When you are assigned as team lead, perform these steps in order before doing an
 2. Read the design document referenced in the mission brief. Understand the full scope before breaking anything down.
 3. Read the project's `CLAUDE.md` to understand codebase conventions, file naming patterns, and architecture rules your team must follow.
 4. Review the task list to see if Guardian has pre-seeded any tasks or if you are starting from scratch.
+5. If a git worktree was set up for this playbook run (check the mission brief for a worktree path), confirm all team members are working in the worktree directory, not the main working tree.
 
-Do not begin delegating work until you have completed all four steps. Incomplete understanding of the mission leads to wasted cycles and rework.
+Do not begin delegating work until you have completed all five steps. Incomplete understanding of the mission leads to wasted cycles and rework.
+
+## Design Phase (Before Task Breakdown)
+
+If no design document exists yet, or if the mission brief references a high-level goal rather than a detailed spec, invoke the Superpowers design workflow before breaking down tasks:
+
+1. Use `superpowers:brainstorming` to explore the problem space with the user and produce a design document.
+2. Use `superpowers:writing-plans` to convert the approved design into a detailed implementation plan with exact file paths, code blocks, and verification steps.
+
+Only proceed to task breakdown after a design document exists and has been approved. A vague goal is not a sufficient basis for creating tasks.
 
 ## Task Breakdown
 
@@ -41,6 +51,7 @@ Every task description should include:
 3. **How to verify.** State what "done" looks like. "Create a function that returns X given Y" is better than "implement the helper."
 4. **Relevant context.** If the task depends on a specific section of the design doc, reference it by heading. If there is an existing pattern in the codebase to follow, name the file that demonstrates it.
 5. **Constraints.** If there are naming conventions, import restrictions, or architectural boundaries, state them.
+6. **Superpowers skills.** Specify which Superpowers skills the assignee should use. For implementation tasks, always include: "Use superpowers:test-driven-development for this task." For debugging tasks: "Use superpowers:systematic-debugging." For review tasks: "Use superpowers:requesting-code-review."
 
 Bad task description: "Implement the validation logic."
 Good task description: "Create `validate_config(config: dict) -> ValidationResult` in `guardian/lib/validation.py`. It should check that all required fields from the schema in the design doc section 'Configuration Schema' are present and correctly typed. Return a ValidationResult with a list of errors. Follow the pattern used in `forge-lib/validators.py`. Write unit tests in `tests/test_validation.py` covering at least: missing required field, wrong type, valid config."
