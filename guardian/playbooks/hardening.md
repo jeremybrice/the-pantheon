@@ -3,7 +3,7 @@ name: hardening
 description: Quality sweep — security, edge cases, and performance review
 team_size: 4
 roles: [lead, security-reviewer, edge-case-finder, perf-tester]
-guardians: [test, convention, integration]
+guardians: [test, convention, integration, verification]
 autonomy: full
 ---
 
@@ -90,6 +90,11 @@ Three guardians are active for hardening:
 - **test** -- Every fix must include a test that reproduces the issue and verifies the fix. This is non-negotiable for hardening work.
 - **convention** -- Fixes must follow existing code conventions. Hardening should not introduce style inconsistencies.
 - **integration** -- The full test suite must pass after each fix. Hardening fixes must not break existing functionality.
+- **verification** -- Enforces evidence-based completion. When a task is marked complete, the verification guardian checks that tests were actually run and that all deliverables exist. Claims without evidence are blocked.
+
+### Git Worktree
+
+All team members work in an isolated git worktree created via `superpowers:using-git-worktrees` during playbook setup. At completion, use `superpowers:finishing-a-development-branch` to merge, create a PR, or discard the branch.
 
 The spec guardian is not active because hardening does not reference a design doc. The context guardian is not active because hardening decisions are typically straightforward (fix the bug, handle the edge case).
 

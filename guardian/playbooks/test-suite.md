@@ -3,7 +3,7 @@ name: test-suite
 description: Backfill tests for existing code with coverage analysis
 team_size: 4
 roles: [lead, test-writer, test-writer, coverage-analyst]
-guardians: [test, convention, integration]
+guardians: [test, convention, integration, verification]
 autonomy: full
 ---
 
@@ -85,6 +85,11 @@ Three guardians are active for test suite backfill:
 - **test** -- Validates that tests are well-formed, follow testing conventions, and actually assert meaningful outcomes. A test that runs code without assertions is not a real test.
 - **convention** -- Test files must follow naming conventions, directory structure, and style guidelines. Test code should be as clean as production code.
 - **integration** -- After each batch of new tests, the full suite runs to confirm that new tests pass and existing tests still pass. New tests must not interfere with existing ones.
+- **verification** -- Enforces evidence-based completion. When a task is marked complete, the verification guardian checks that tests were actually run and that all deliverables exist. Claims without evidence are blocked.
+
+### Git Worktree
+
+All team members work in an isolated git worktree created via `superpowers:using-git-worktrees` during playbook setup. At completion, use `superpowers:finishing-a-development-branch` to merge, create a PR, or discard the branch.
 
 The spec and context guardians are not active. Test backfill does not reference a design doc, and the decisions involved (what to test and how) are straightforward enough to not require context tracking.
 

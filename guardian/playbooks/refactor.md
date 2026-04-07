@@ -3,7 +3,7 @@ name: refactor
 description: Cross-module restructuring with module ownership
 team_size: 4
 roles: [lead, module-owner, module-owner, integration-tester]
-guardians: [test, convention, integration, context]
+guardians: [test, convention, integration, context, verification]
 autonomy: full
 ---
 
@@ -27,6 +27,17 @@ This playbook is NOT appropriate when:
 - You are adding new behavior or features (use feature-build)
 - You are fixing a specific bug (use bug-hunt)
 - The change is limited to a single file or function (just do it directly)
+
+## Pre-Flight: Design Phase
+
+Before spawning the team, ensure a design document exists:
+
+1. If the user provides a design doc path, validate it exists and is detailed enough for task breakdown.
+2. If no design doc exists, run the Superpowers design workflow:
+   - Invoke `superpowers:brainstorming` to explore the problem and produce a spec
+   - Invoke `superpowers:writing-plans` to convert the spec into an implementation plan
+   - Save the plan as the design document referenced in the mission brief
+3. Only proceed to team creation after the design is approved.
 
 ## Roles
 
@@ -84,6 +95,11 @@ Four guardians are active for refactoring:
 - **convention** -- Refactored code must follow established conventions. Refactoring is an opportunity to improve consistency, not introduce new inconsistencies.
 - **integration** -- The full test suite runs after every task. This is the primary safety net for refactoring. A red integration run means stop and fix before continuing.
 - **context** -- Records why refactoring decisions were made. This is especially important for refactoring because the "what" is visible in the code diff but the "why" is not. Capture the reasoning.
+- **verification** -- Enforces evidence-based completion. When a task is marked complete, the verification guardian checks that tests were actually run and that all deliverables exist. Claims without evidence are blocked.
+
+### Git Worktree
+
+All team members work in an isolated git worktree created via `superpowers:using-git-worktrees` during playbook setup. At completion, use `superpowers:finishing-a-development-branch` to merge, create a PR, or discard the branch.
 
 The spec guardian is not active because refactoring does not reference a design doc.
 
