@@ -11,13 +11,13 @@
     {
       "name": "guardian",
       "source": "./guardian",
-      "description": "Hook-based guardian agents and team playbooks for autonomous, validated development workflows",
-      "version": "1.0.0-alpha",
+      "description": "Team orchestration and enforcement layer for Superpowers-enhanced agent teams",
+      "version": "2.0.0-alpha",
       "author": {
         "name": "Jeremy Brice"
       },
       "license": "MIT",
-      "keywords": ["agent-team", "validation", "playbooks", "hooks", "autonomous"],
+      "keywords": ["agent-team", "validation", "playbooks", "hooks", "autonomous", "superpowers"],
       "category": "agent-teams",
       "tags": ["agent-team", "guardian", "validation", "playbooks"]
     }

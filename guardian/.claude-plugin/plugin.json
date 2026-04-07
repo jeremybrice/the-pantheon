@@ -1,6 +1,9 @@
 {
   "name": "guardian",
-  "version": "1.0.0-alpha",
-  "description": "Hook-based guardian agents and team playbooks for autonomous, validated development workflows",
-  "author": { "name": "Jeremy Brice" }
+  "version": "2.0.0-alpha",
+  "description": "Team orchestration and enforcement layer for Superpowers-enhanced agent teams",
+  "author": { "name": "Jeremy Brice" },
+  "dependencies": {
+    "plugins": ["superpowers@claude-plugins-official"]
+  }
 }

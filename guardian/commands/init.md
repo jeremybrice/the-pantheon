@@ -20,12 +20,14 @@ Read the project's `.claude/settings.json` file.
 
 Inspect the parsed settings for an existing `hooks.TaskCompleted` entry.
 
-If the `TaskCompleted` hook already exists and contains a command referencing `task-completed.sh`, inform the user and stop:
+If the `TaskCompleted` hook already exists and contains a command referencing `task-completed.sh`, and the `SessionStart` hook already exists and references `session-start.sh`, inform the user and stop:
 
 ```
 Guardian hooks are already registered in this project.
 
-  Hook: TaskCompleted -> task-completed.sh
+  Hooks:
+    SessionStart  -> session-start.sh (context injection)
+    TaskCompleted -> task-completed.sh (guardian validation)
   Config: .guardian/guardians.json (created when you run a playbook)
 
 You're ready to go. Run /guardian:list-playbooks to see available playbooks.
@@ -37,11 +39,23 @@ Do not modify the file. Do not proceed to subsequent steps.
 
 Add the `TaskCompleted` hook entry to the settings. MERGE with any existing hooks — do not overwrite other hook types that may already be configured.
 
-The hook entry to add:
+The hook entries to add:
 
 ```json
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/session-start.sh",
+            "async": false
+          }
+        ]
+      }
+    ],
     "TaskCompleted": [
       {
         "matcher": "",
@@ -68,12 +82,17 @@ Create the `.guardian/` directory in the project root if it does not already exi
 ```
 Guardian initialized.
 
-  Hook registered: TaskCompleted -> task-completed.sh
+  Hooks registered:
+    SessionStart  -> session-start.sh (context injection)
+    TaskCompleted -> task-completed.sh (guardian validation)
   Working directory: .guardian/
 
-When a teammate marks a task complete, the hook will run all enabled
-guardians defined in .guardian/guardians.json. Failed guardians block the
-task and send feedback to the teammate.
+When a session starts in a project with .guardian/guardians.json, the
+SessionStart hook injects active guardian context and Superpowers skill
+requirements. When a teammate marks a task complete, the TaskCompleted
+hook runs all enabled guardians.
+
+Prerequisite: superpowers@claude-plugins-official must be installed.
 
 Next steps:
   /guardian:list-playbooks  — see available playbooks
