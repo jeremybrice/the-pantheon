@@ -61,6 +61,25 @@ if [ "$INTEGRATION_ENABLED" = "true" ]; then
   fi
 fi
 
+# --- Verification Guardian ---
+VERIFICATION_ENABLED=$(jq -r '.verification_guardian.enabled // false' "$CONFIG")
+if [ "$VERIFICATION_ENABLED" = "true" ]; then
+  REQUIRE_TEST_EVIDENCE=$(jq -r '.verification_guardian.require_test_evidence // true' "$CONFIG")
+
+  if [ "$REQUIRE_TEST_EVIDENCE" = "true" ]; then
+    # Check if tests were run by looking for git changes to test files
+    TEST_FILES_CHANGED=$(cd "$PROJECT_DIR" && git diff --name-only HEAD 2>/dev/null | grep -c -E '(test_|_test\.|\.test\.|spec\.)' || true)
+    CODE_FILES_CHANGED=$(cd "$PROJECT_DIR" && git diff --name-only HEAD 2>/dev/null | grep -c -v -E '(test_|_test\.|\.test\.|spec\.)' || true)
+
+    if [ "$CODE_FILES_CHANGED" -gt 0 ] && [ "$TEST_FILES_CHANGED" -eq 0 ]; then
+      ERRORS="${ERRORS}VERIFICATION GUARDIAN FAILED for task '$TASK_SUBJECT':\n"
+      ERRORS="${ERRORS}Code files were changed but no test files were added or updated.\n"
+      ERRORS="${ERRORS}Evidence of testing is required before task completion.\n"
+      ERRORS="${ERRORS}Add or update tests for your changes, run the test suite, and try again.\n\n"
+    fi
+  fi
+fi
+
 # If any guardian failed, block the task
 if [ -n "$ERRORS" ]; then
   printf "%b" "$ERRORS" >&2
