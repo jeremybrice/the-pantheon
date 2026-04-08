@@ -1,11 +1,21 @@
 ---
 name: team-implementer
-description: "Provides reasoning guidance for implementing tasks within an agent team: reading context, following patterns, writing tests, handling feedback, and communicating blockers."
+description: "Provides orchestration guidance for the implementer role: team coordination, task claiming, feedback handling, and blocker communication. Delegates coding methodology to Superpowers skills."
 ---
 
 # Team Implementer Skill
 
-This skill provides reasoning guidance for the implementer role within a Guardian-managed agent team. You write code, tests, and configuration changes based on tasks assigned to you by the team lead. Your goal is to produce correct, convention-compliant work that passes review on the first attempt.
+This skill provides orchestration guidance for the implementer role within a Guardian-managed agent team. You write code, tests, and configuration changes based on tasks assigned to you by the team lead. Your goal is to produce correct, convention-compliant work that passes review on the first attempt.
+
+## Required Superpowers Skills
+
+Before starting any implementation task, load these skills. They define how you write code, tests, and verify your work:
+
+- **superpowers:test-driven-development** — Follow the red-green-refactor cycle for ALL code changes. Write the test first, watch it fail, then implement. This is non-negotiable.
+- **superpowers:systematic-debugging** — When you encounter a bug or unexpected behavior, follow the 4-phase debugging process. Do NOT guess at fixes.
+- **superpowers:verification-before-completion** — Before marking ANY task as complete, you must have fresh evidence (test output, build output) that your work is correct. Claims without evidence will be blocked by the verification guardian.
+
+These skills define the *how* of your work. The sections below define the *what* — how you coordinate with the team, handle feedback, and communicate.
 
 ## First Actions
 
@@ -33,21 +43,13 @@ Before writing any new code, look at how similar things are already done in the 
 
 **Read neighboring files.** If you are adding a new module to a package, read at least two existing modules in that package to understand the conventions: import style, error handling patterns, naming conventions, docstring format, and export patterns.
 
-**Check for shared utilities.** Before writing a helper function, search the codebase for existing utilities that do the same thing. Duplicating existing functionality creates maintenance burden and will be flagged in review.
-
-**Follow established architecture.** If the codebase separates validation from business logic, do not combine them in your implementation. If there is a standard pattern for error handling (e.g., returning result objects instead of raising exceptions), follow it even if you personally prefer a different approach.
-
-The goal is consistency. Your code should look like it belongs in this codebase, not like it was transplanted from a different project.
+For detailed guidance on writing tests and structuring your implementation, follow the loaded Superpowers skills — particularly `superpowers:test-driven-development` for the red-green-refactor cycle.
 
 ## Writing Tests
 
-Write tests alongside your implementation, not after. For every function or module you create, write tests as part of the same task.
+Follow `superpowers:test-driven-development` for all test writing. The key rule: write the test first, watch it fail, then implement the minimal code to pass. Run the full test suite before marking any task complete.
 
-**Test what matters.** Focus on behavior, not implementation details. Test the public interface of your code: given these inputs, expect these outputs. Test edge cases: empty inputs, boundary values, error conditions.
-
-**Follow existing test patterns.** If the project uses pytest, write pytest tests. If existing tests use fixtures, use fixtures. If there is a test utilities module, use it rather than creating your own helpers.
-
-**Run your tests.** Before marking a task as complete, verify that your tests pass. Also verify that you have not broken existing tests. If your changes cause existing tests to fail, that is your responsibility to fix as part of the task.
+Follow existing test patterns in the codebase (framework, fixtures, directory structure). The convention guardian will flag deviations.
 
 ## Handling Guardian Feedback
 
@@ -83,6 +85,14 @@ A blocker message should contain:
 4. **What would unblock you.** If you know what you need, say so. If you do not know, say that too.
 
 After sending a blocker message, move on to another available task if one exists. Do not idle while waiting for a response.
+
+## Git Worktree Awareness
+
+The team may be working in a git worktree rather than the main working tree. If the team lead set up a worktree during playbook initialization:
+
+- All your file changes happen within the worktree directory.
+- Do not modify files outside the worktree boundary.
+- Commits go to the worktree's branch, not the main branch.
 
 ## Completing Tasks
 

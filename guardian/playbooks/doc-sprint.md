@@ -3,7 +3,7 @@ name: doc-sprint
 description: Documentation push with accuracy validation
 team_size: 4
 roles: [lead, writer, code-reader, accuracy-checker]
-guardians: [spec, convention]
+guardians: [spec, convention, verification]
 autonomy: full
 ---
 
@@ -27,6 +27,17 @@ This playbook is NOT appropriate when:
 - You are fixing a bug (use bug-hunt)
 - You are writing code (use feature-build)
 - The documentation change is a single sentence or paragraph (just edit it directly)
+
+## Pre-Flight: Design Phase
+
+Before spawning the team, ensure a documentation plan exists:
+
+1. If the user provides a documentation plan or scope document, validate it exists and is detailed enough for task breakdown.
+2. If no plan exists, run the Superpowers design workflow:
+   - Invoke `superpowers:brainstorming` to explore the documentation scope and produce a plan
+   - Invoke `superpowers:writing-plans` to convert the plan into a detailed task breakdown
+   - Save the plan as the design document referenced in the mission brief
+3. Only proceed to team creation after the plan is approved.
 
 ## Roles
 
@@ -84,6 +95,11 @@ Two guardians are active for documentation sprints:
 
 - **spec** -- Validates that documentation covers what was planned. The documentation plan serves as the spec. Every document in the plan must be produced.
 - **convention** -- Validates formatting, structure, and terminology consistency across all documents. Documentation should follow a uniform style.
+- **verification** -- Enforces evidence-based completion. When a task is marked complete, the verification guardian checks that all deliverables exist and accuracy has been verified. Claims without evidence are blocked.
+
+### Git Worktree
+
+All team members work in an isolated git worktree created via `superpowers:using-git-worktrees` during playbook setup. At completion, use `superpowers:finishing-a-development-branch` to merge, create a PR, or discard the branch.
 
 The test, integration, and context guardians are not active. Documentation sprints do not produce code, so test and integration are irrelevant. Context tracking is less important when the work product is documentation itself.
 

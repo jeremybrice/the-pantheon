@@ -3,7 +3,7 @@ name: bug-hunt
 description: Competing hypothesis debugging with parallel investigators
 team_size: 5
 roles: [lead, investigator, investigator, investigator, fixer]
-guardians: [test, integration]
+guardians: [test, integration, verification]
 autonomy: full
 ---
 
@@ -89,6 +89,11 @@ Two guardians are active for bug hunts:
 
 - **test** -- The fix must include regression tests. The test guardian ensures that the fixer writes tests that reproduce the bug and verify the fix.
 - **integration** -- The full test suite must pass after the fix. Bug fixes must not introduce new regressions.
+- **verification** -- Enforces evidence-based completion. When a task is marked complete, the verification guardian checks that tests were actually run and that all deliverables exist. Claims without evidence are blocked.
+
+### Git Worktree
+
+All team members work in an isolated git worktree created via `superpowers:using-git-worktrees` during playbook setup. At completion, use `superpowers:finishing-a-development-branch` to merge, create a PR, or discard the branch.
 
 The spec, convention, and context guardians are not active. Bug fixes should be minimal and focused. Convention enforcement and spec validation add friction without proportional value for targeted fixes.
 

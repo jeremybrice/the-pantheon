@@ -40,7 +40,8 @@ Build the config from the playbook's guardian list. Only include guardians the p
   "test_guardian": { "enabled": true, "test_command": "{cmd}", "require_passing": true },
   "convention_guardian": { "enabled": true, "agent": "$CLAUDE_PLUGIN_ROOT/agents/convention-guardian.md" },
   "integration_guardian": { "enabled": true, "file_threshold": 3, "test_command": "{cmd}" },
-  "context_guardian": { "enabled": true, "decisions_log": ".guardian/decisions-log.md", "blocking": false }
+  "context_guardian": { "enabled": true, "decisions_log": ".guardian/decisions-log.md", "blocking": false },
+  "verification_guardian": { "enabled": true, "require_test_evidence": true, "require_deliverables_check": true }
 }
 ```
 
@@ -72,6 +73,15 @@ or proceed without guardian validation. Continue? (yes/no)
 
 ## Phase 4: Create the Agent Team
 
+### Step 0: Set Up Worktree
+
+Before creating the team, set up an isolated workspace:
+
+1. Invoke `superpowers:using-git-worktrees` to create a worktree for this playbook run.
+2. Record the worktree path in the mission brief under a `worktree_path` field.
+3. All subsequent team agent prompts should include the worktree path so agents work in the correct directory.
+4. At playbook completion, use `superpowers:finishing-a-development-branch` to merge, create a PR, or discard.
+
 ### Step 1: Create Team
 
 Use `TeamCreate` with team_name `guardian-{playbook_name}` (e.g., `guardian-feature-build`).
@@ -99,6 +109,9 @@ Use the `Task` tool for each role in the playbook. Spawn ALL teammates in parall
 
   Read your role skill for detailed guidance:
   Read file: $CLAUDE_PLUGIN_ROOT/skills/{skill_name}/SKILL.md
+
+  Your role skill references Superpowers skills. Load them as instructed
+  in the skill file — they define how you write code, tests, and reviews.
 
   Read the mission brief to understand the full objective:
   Read file: .guardian/mission-brief.md
