@@ -1,6 +1,6 @@
 #!/bin/bash
 # Guardian TaskCompleted Hook
-# Reads .guardian/guardians.json config, runs enabled guardians.
+# Reads .guardian/guardians.json config, runs test, integration, and verification guardians.
 # Exit 0 = pass (task completes). Exit 2 = block (stderr fed back as feedback).
 
 set -euo pipefail
@@ -45,8 +45,8 @@ INTEGRATION_ENABLED=$(jq -r '.integration_guardian.enabled // false' "$CONFIG")
 if [ "$INTEGRATION_ENABLED" = "true" ]; then
   FILE_THRESHOLD=$(jq -r '.integration_guardian.file_threshold // 3' "$CONFIG")
 
-  # Count files changed in working tree (staged + unstaged)
-  CHANGED_FILES=$(cd "$PROJECT_DIR" && git diff --name-only HEAD 2>/dev/null | wc -l | tr -d ' ')
+  # Count files changed in the latest commit and working tree
+  CHANGED_FILES=$(cd "$PROJECT_DIR" && { git diff --name-only HEAD~1..HEAD 2>/dev/null; git diff --name-only HEAD 2>/dev/null; } | sort -u | wc -l | tr -d ' ')
 
   if [ "$CHANGED_FILES" -ge "$FILE_THRESHOLD" ]; then
     TEST_CMD=$(jq -r '.test_guardian.test_command // ""' "$CONFIG")
@@ -67,9 +67,10 @@ if [ "$VERIFICATION_ENABLED" = "true" ]; then
   REQUIRE_TEST_EVIDENCE=$(jq -r '.verification_guardian.require_test_evidence // true' "$CONFIG")
 
   if [ "$REQUIRE_TEST_EVIDENCE" = "true" ]; then
-    # Check if tests were run by looking for git changes to test files
-    TEST_FILES_CHANGED=$(cd "$PROJECT_DIR" && git diff --name-only HEAD 2>/dev/null | grep -c -E '(test_|_test\.|\.test\.|spec\.)' || true)
-    CODE_FILES_CHANGED=$(cd "$PROJECT_DIR" && git diff --name-only HEAD 2>/dev/null | grep -c -v -E '(test_|_test\.|\.test\.|spec\.)' || true)
+    # Check if tests were run by looking for changes in the latest commit and working tree
+    ALL_CHANGED=$(cd "$PROJECT_DIR" && { git diff --name-only HEAD~1..HEAD 2>/dev/null; git diff --name-only HEAD 2>/dev/null; } | sort -u)
+    TEST_FILES_CHANGED=$(echo "$ALL_CHANGED" | grep -c -E '(test_|_test\.|\.test\.|spec\.)' || true)
+    CODE_FILES_CHANGED=$(echo "$ALL_CHANGED" | grep -c -v -E '(test_|_test\.|\.test\.|spec\.)' || true)
 
     if [ "$CODE_FILES_CHANGED" -gt 0 ] && [ "$TEST_FILES_CHANGED" -eq 0 ]; then
       ERRORS="${ERRORS}VERIFICATION GUARDIAN FAILED for task '$TASK_SUBJECT':\n"
